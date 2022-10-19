@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useRef } from 'react'
+import PostForm from './components/PostForm'
+import PostList from './components/PostList'
+import './styles/App.css'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [posts, setPosts] = useState([
+		{ id: 1, title: 'HTML', body: 'Description' },
+		{ id: 2, title: 'CSS', body: 'Description' },
+		{ id: 3, title: 'JavaScript', body: 'Description' },
+	])
+
+	const createPost = newPost => {
+		setPosts([...posts, newPost])
+	}
+
+	// Получаем post из дочернего компонента
+	const removePost = post => {
+		setPosts(posts.filter(p => p.id !== post.id))
+	}
+
+	return (
+		<div className='App'>
+			<PostForm create={createPost} />
+			{posts.length !== 0 ? (
+				<PostList remove={removePost} posts={posts} title='Ftontend' />
+			) : (
+				<h1 style={{textAling: 'center'}}>Posts it`s not defined</h1>
+			)}
+		</div>
+	)
 }
 
-export default App;
+export default App
