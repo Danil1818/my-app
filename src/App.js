@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import PostForm from './components/PostForm'
 import PostList from './components/PostList'
 import './styles/App.css'
