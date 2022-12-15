@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import PostFilter from './components/PostFilter'
 import PostForm from './components/PostForm'
 import PostList from './components/PostList'
-import MyInput from './components/UI/input/MyInput'
-import MySelect from './components/UI/select/MySelect'
 import './styles/App.css'
+
 
 function App() {
 	const [posts, setPosts] = useState([
@@ -12,20 +12,22 @@ function App() {
 		{ id: 3, title: 'JavaScript', body: 'Programming Language' },
 	])
 
-	const [selectedSort, setSelectedSort] = useState('')
-	const [searchQuery, setSearchQuery] = useState('')
+	const [filter, setFilter] = useState({ sort: '', query: '' })
 
-	function getSortedPosts() {
-		console.log(
-			'==========================================================================='
-		)
-		if (selectedSort) {
-			return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
+	const sortedPosts = useMemo(() => {
+		if (filter.sort) {
+			return [...posts].sort((a, b) =>
+				a[filter.sort].localeCompare(b[filter.sort])
+			)
 		}
 		return posts
-	}
+	}, [filter.sort, posts])
 
-	const sortedPosts = getSortedPosts()
+	const sortedAndSelectPosts = useMemo(() => {
+		return sortedPosts.filter(post =>
+			post.title.toLowerCase().includes(filter.query.toLowerCase())
+		)
+	}, [filter.query, sortedPosts])
 
 	const createPost = newPost => {
 		setPosts([...posts, newPost])
@@ -35,33 +37,20 @@ function App() {
 	const removePost = post => {
 		setPosts(posts.filter(p => p.id !== post.id))
 	}
-
-	const sortPosts = sort => {
-		setSelectedSort(sort)
-	}
+	
+	console.log("Ok, its working@!!");
 
 	return (
 		<div className='App'>
 			<PostForm create={createPost} />
 			<hr style={{ margin: '15px 0' }} />
-			<div>
-				<MyInput
-					placeholder='Поиск'
-					value={searchQuery}
-					onChange={e => setSearchQuery(e.target.value)}
+			<PostFilter filter={filter} setFilter={setFilter} />
+			{sortedAndSelectPosts.length ? (
+				<PostList
+					remove={removePost}
+					posts={sortedAndSelectPosts}
+					title='Posts'
 				/>
-				<MySelect
-					value={selectedSort}
-					onChange={sortPosts}
-					defaultValue='Сортировка'
-					options={[
-						{ value: 'title', name: 'По названию' },
-						{ value: 'body', name: 'По описанию' },
-					]}
-				/>
-			</div>
-			{posts.length ? (
-				<PostList remove={removePost} posts={sortedPosts} title='Ftontend' />
 			) : (
 				<h1 style={{ textAling: 'center' }}>Posts it`s not defined</h1>
 			)}
