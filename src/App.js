@@ -2,8 +2,10 @@ import React, { useMemo, useState } from 'react'
 import PostFilter from './components/PostFilter'
 import PostForm from './components/PostForm'
 import PostList from './components/PostList'
+import MyModal from './components/UI/modal/MyModal'
 import './styles/App.css'
 
+// rfce - reactFunctionalComponentExport
 
 function App() {
 	const [posts, setPosts] = useState([
@@ -37,23 +39,23 @@ function App() {
 	const removePost = post => {
 		setPosts(posts.filter(p => p.id !== post.id))
 	}
-	
-	console.log("Ok, its working@!!");
+
+	console.log('Ok, its working@!!')
 
 	return (
 		<div className='App'>
-			<PostForm create={createPost} />
-			<hr style={{ margin: '15px 0' }} />
+			<MyModal>
+				<PostForm create={createPost} />
+			</MyModal>
+
+			{/* TimeCode 1:26 */}
+
 			<PostFilter filter={filter} setFilter={setFilter} />
-			{sortedAndSelectPosts.length ? (
-				<PostList
-					remove={removePost}
-					posts={sortedAndSelectPosts}
-					title='Posts'
-				/>
-			) : (
-				<h1 style={{ textAling: 'center' }}>Posts it`s not defined</h1>
-			)}
+			<PostList
+				remove={removePost}
+				posts={sortedAndSelectPosts}
+				title='Posts'
+			/>
 		</div>
 	)
 }
